@@ -1,0 +1,118 @@
+swagger: "2.0"
+info:
+  description: "API for the connected barman"
+  version: "1.0.0"
+  title: "BarConnecte"
+host: "localhost:3000"
+tags:
+- name: "drink"
+  description: "Drink"
+- name: "recipe"
+  description: "Recipe"
+schemes:
+- "http"
+paths:
+  /drink:
+    get:
+      tags:
+      - "drink"
+      summary: "Get the list of the drinks waiting to be serve"
+      description: ""
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "List of drinks"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Drink"
+    put:
+      tags:
+      - "drink"
+      summary: "Add a drink to serve"
+      description: ""
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Drink object"
+        required: true
+        schema:
+          $ref: "#/definitions/DrinkNoId"
+      responses:
+        200:
+          description: "Drink saved"
+        400:
+          description: "Invalid object send"
+  /drink/{drinkId}:
+    delete:
+      tags:
+      - "drink"
+      summary: "Delete a drink"
+      description: ""
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "drinkId"
+        in: "path"
+        description: "Drink to delete"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Drink deleted"
+        400:
+          description: "Id not found"
+  /drink/reset:
+    get:
+      tags:
+      - "drink"
+      summary: "Empty the drink list"
+      description: ""
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "List empty"
+definitions:
+  Ingredient:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+        enum:
+        - "water"
+        - "lemonade"
+        - "grenadine"
+        - "mint"
+      value:
+        type: "integer"
+        description: "Percentage"
+  DrinkNoId:
+    type: "object"
+    required:
+    - "ingredients"
+    properties:
+      ingredients:
+        type: "array"
+        items:
+          $ref: "#/definitions/Ingredient"
+  Drink:
+    type: "object"
+    required:
+    - "id"
+    - "ingredients"
+    properties:
+      id:
+        type: "string"
+      ingredients:
+        type: "array"
+        items:
+          $ref: "#/definitions/Ingredient"
