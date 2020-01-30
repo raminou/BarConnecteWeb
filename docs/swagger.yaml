@@ -3,7 +3,7 @@ info:
   description: "API for the connected barman"
   version: "1.0.0"
   title: "BarConnecte"
-host: "localhost:3000"
+host: "localhost:8080"
 tags:
 - name: "drink"
   description: "Drink"
@@ -57,7 +57,6 @@ paths:
       summary: "Delete a drink"
       description: ""
       produces:
-      - "application/xml"
       - "application/json"
       parameters:
       - name: "drinkId"
@@ -70,6 +69,38 @@ paths:
           description: "Drink deleted"
         400:
           description: "Id not found"
+    post:
+      tags:
+      - "drink"
+      summary: "Update the status of a drink"
+      description: ""
+      produces:
+      - "application/json"
+      parameters:
+      - name: "drinkId"
+        in: "path"
+        description: "Drink to update"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            status:
+              type: "string"
+              enum:
+              - "queue"
+              - "prepare"
+              - "done"
+              - "served"
+              - "error"
+      responses:
+        200:
+          description: "Drink updated"
+        400:
+          description: "Id not found or status undefined"
   /drink/reset:
     get:
       tags:

@@ -10,12 +10,12 @@ const status_model = {
 };
 
 function initStatus(req, message="") {
-    let status;
-    console.log("ASSIGN:", status_model);
-    status = JSON.parse(JSON.stringify(status_model));
+    let status = JSON.parse(JSON.stringify(status_model));
     status.method = req.method;
     status.action = req.originalUrl;
     status.message = message;
+
+    console.log(`${req.method} ${req.originalUrl}`);
 
     return status;
 }
