@@ -23,6 +23,8 @@ const wss = new WebSocket.Server({ port: process.env.PORT_WS });
 console.log(`Listen WS on port ${process.env.PORT_WS}!`)
 
 wss.on('connection', function connection(ws) {
-    drink.linkToDrink(message, ws);
+    ws.on('message', (message) => {
+        drink.linkToDrink(message, ws);
+    });
 });
 
