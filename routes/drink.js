@@ -45,41 +45,59 @@ router.get('/', function(req, res) {
 
 router.get('/first', function(req, res) {
     const contentType = req.header('accept');
-    const drink = drinks[0];
+    if(drinks.length >= 1) {
+        const drink = drinks[0];
 
-    switch(contentType) {
-        case "text/plain":
-            let text = `${drink.id},`;
-            if(drink === undefined) 
-                text += "NULL";
-            else {
-                for(let i = 0; i < ingredients.length; i++) {
-                    const key = ingredients[i];
-                    let find = false;
-                    for(let j = 0; j < drink.ingredients.length; j++) {
-                        const ing = drink.ingredients[j];
-                        if(ing.name === key) {
-                            find = true;
-                            console.log(`\t${ing.name}: ${ing.value}`);
-                            text += ing.value + ",";
-                            break;
+        switch(contentType) {
+            case "text/plain":
+                console.log(drink);
+                let text = `${drink.id},`;
+                if(drink === undefined) 
+                    text += "NULL";
+                else {
+                    for(let i = 0; i < ingredients.length; i++) {
+                        const key = ingredients[i];
+                        let find = false;
+                        for(let j = 0; j < drink.ingredients.length; j++) {
+                            const ing = drink.ingredients[j];
+                            if(ing.name === key) {
+                                find = true;
+                                console.log(`\t${ing.name}: ${ing.value}`);
+                                text += ing.value + ",";
+                                break;
+                            }
                         }
-                    }
 
-                    if(!find)
-                        text += "0,";
+                        if(!find)
+                            text += "0,";
+                    }
                 }
-            }
-            
-            console.log(`SEND TEXT: ${text}`);
-            res.set('Content-Type', 'text/plain');
-            res.send(text);
-            break;
-        case "application/json":
-        default:
-            let status = initStatus(req, "First Drink");
-            status.data = drinks[0];
-            res.json(status);
+                
+                console.log(`SEND TEXT: ${text}`);
+                res.set('Content-Type', 'text/plain');
+                res.send(text);
+                break;
+            case "application/json":
+            default:
+                let status = initStatus(req, "First Drink");
+                status.data = drinks[0];
+                res.json(status);
+        }
+    }
+    else {
+        switch(contentType) {
+            case "text/plain":
+                console.log("/drink/first NULL");
+                res.set('Content-Type', 'text/plain');
+                res.send("NULL");
+                break;
+            case "application/json":
+            default:
+                let status = initStatus(req, "First Drink");
+                status.data = {};
+                status.warnings.push("No drink");
+                res.json(status);
+        }
     }
 });
 
