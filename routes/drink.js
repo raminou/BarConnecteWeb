@@ -49,9 +49,9 @@ router.get('/first', function(req, res) {
 
     switch(contentType) {
         case "text/plain":
-            let text = "";
+            let text = `${drink.id},`;
             if(drink === undefined) 
-                text = "NULL";
+                text += "NULL";
             else {
                 for(let i = 0; i < ingredients.length; i++) {
                     const key = ingredients[i];
