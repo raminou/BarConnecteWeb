@@ -1,16 +1,16 @@
-swagger: "2.0"
+openapi: 3.0.0
 info:
   description: "API for the connected barman"
   version: "1.0.0"
-  title: "BarConnecte"
-host: "localhost:8080"
+  title: "BarConnecteWeb"
+servers:
+ - url: "http://localhost:8080/"
+ - url: "http://vps127565.ovh.net:8080/"
 tags:
 - name: "drink"
   description: "Drink"
 - name: "recipe"
   description: "Recipe"
-schemes:
-- "http"
 paths:
   /drink:
     get:
@@ -18,132 +18,194 @@ paths:
       - "drink"
       summary: "Get the list of the drinks waiting to be serve"
       description: ""
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
       responses:
         200:
           description: "List of drinks"
-          schema:
-            type: "array"
-            items:
-              $ref: "#/definitions/Drink"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/Drink"
     put:
       tags:
       - "drink"
       summary: "Add a drink to serve"
       description: ""
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
+      requestBody:
         description: "Drink object"
         required: true
-        schema:
-          $ref: "#/definitions/DrinkNoId"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DrinkNoId"
       responses:
         200:
           description: "Drink saved"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Status"
         400:
           description: "Invalid object send"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Status"
+  /drink/first:
+    get:
+      tags:
+      - "drink"
+      summary: "Get the first drink"
+      description: ""
+      responses:
+        200:
+          description: "Get the first drink"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+                description: "Number in % separated by ',' With a specific order"
+                format: "x,x,..."
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Drink"
+              
   /drink/{drinkId}:
     delete:
       tags:
       - "drink"
       summary: "Delete a drink"
       description: ""
-      produces:
-      - "application/json"
       parameters:
-      - name: "drinkId"
-        in: "path"
+      - in: "path"
+        name: "drinkId"
         description: "Drink to delete"
         required: true
-        type: "string"
+        schema:
+          type: "string"
       responses:
         200:
           description: "Drink deleted"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Status"
         400:
           description: "Id not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Status"
     post:
       tags:
       - "drink"
       summary: "Update the status of a drink"
       description: ""
-      produces:
-      - "application/json"
       parameters:
-      - name: "drinkId"
-        in: "path"
+      - in: "path"
+        name: "drinkId"
         description: "Drink to update"
         required: true
-        type: "string"
-      - in: "body"
-        name: "body"
-        required: true
         schema:
-          type: "object"
-          properties:
-            status:
-              type: "string"
-              enum:
-              - "queue"
-              - "prepare"
-              - "done"
-              - "served"
-              - "error"
+          type: "string"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: "object"
+              properties:
+                status:
+                  type: "string"
+                  enum:
+                  - "queue"
+                  - "prepare"
+                  - "done"
+                  - "served"
+                  - "error"
       responses:
         200:
           description: "Drink updated"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Status"
         400:
           description: "Id not found or status undefined"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Status"
   /drink/reset:
     get:
       tags:
       - "drink"
       summary: "Empty the drink list"
       description: ""
-      produces:
-      - "application/json"
       responses:
         200:
           description: "List empty"
-definitions:
-  Ingredient:
-    type: "object"
-    properties:
-      name:
-        type: "string"
-        enum:
-        - "water"
-        - "lemonade"
-        - "grenadine"
-        - "mint"
-      value:
-        type: "integer"
-        description: "Percentage"
-  DrinkNoId:
-    type: "object"
-    required:
-    - "ingredients"
-    properties:
-      ingredients:
-        type: "array"
-        items:
-          $ref: "#/definitions/Ingredient"
-  Drink:
-    type: "object"
-    required:
-    - "id"
-    - "ingredients"
-    properties:
-      id:
-        type: "string"
-      ingredients:
-        type: "array"
-        items:
-          $ref: "#/definitions/Ingredient"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Status"
+components:
+  schemas:
+    Status:
+      type: "object"
+      properties:
+        method:
+          type: "string"
+          description: "called method"
+        action:
+          type: "string"
+          description: "url called"
+        errors:
+          type: "array"
+          items:
+            type: "string"
+          description: "Error messages"
+        warnings:
+          type: "array"
+          items:
+            type: "string"
+          description: "Warning messages"
+        data:
+          type: "object"
+        message:
+          type: "string"
+    Ingredient:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+          enum:
+          - "water"
+          - "lemonade"
+          - "grenadine"
+          - "mint"
+        value:
+          type: "integer"
+          description: "Percentage"
+    DrinkNoId:
+      type: "object"
+      required:
+      - "ingredients"
+      properties:
+        ingredients:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Ingredient"
+    Drink:
+      type: "object"
+      required:
+      - "id"
+      - "ingredients"
+      properties:
+        id:
+          type: "string"
+        ingredients:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Ingredient"

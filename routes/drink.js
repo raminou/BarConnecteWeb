@@ -1,5 +1,5 @@
 const express = require('express');
-const {ingredients_model, drink_model} = require('../models/drink_model');
+const {ingredients_model, ingredients} = require('../models/drink_model');
 const {initStatus, generateUuid} = require('../utils');
 
 const router = express.Router();
@@ -40,6 +40,46 @@ router.get('/', function(req, res) {
     let status = initStatus(req, "List of drinks");
     status.data = drinks;
     res.json(status);
+});
+
+router.get('/first', function(req, res) {
+    const contentType = req.header('accept');
+    const drink = drinks[0];
+
+    switch(contentType) {
+        case "text/plain":
+            let text = "";
+            if(drink === undefined) 
+                text = "NULL";
+            else {
+                for(let i = 0; i < ingredients.length; i++) {
+                    const key = ingredients[i];
+                    let find = false;
+                    for(let j = 0; j < drink.ingredients.length; j++) {
+                        const ing = drink.ingredients[j];
+                        if(ing.name === key) {
+                            find = true;
+                            console.log(`\t${ing.name}: ${ing.value}`);
+                            text += ing.value + ",";
+                            break;
+                        }
+                    }
+
+                    if(!find)
+                        text += "0,";
+                }
+            }
+            
+            console.log(`SEND TEXT: ${text}`);
+            res.set('Content-Type', 'text/plain');
+            res.send(text);
+            break;
+        case "application/json":
+        default:
+            let status = initStatus(req, "First Drink");
+            status.data = drinks[0];
+            res.json(status);
+    }
 });
 
 // Add Drink
