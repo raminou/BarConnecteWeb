@@ -51,7 +51,7 @@ router.get('/first', function(req, res) {
         switch(contentType) {
             case "text/plain":
                 console.log(drink);
-                let text = `${drink.id},`;
+                let text = `${drink.id} `;
                 if(drink === undefined) 
                     text += "NULL";
                 else {

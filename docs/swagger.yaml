@@ -66,7 +66,7 @@ paths:
               schema:
                 type: "string"
                 description: "Number in % separated by ',' With a specific order"
-                format: "device_id,x,x,..."
+                format: "device_id x,x,..."
             application/json:
               schema:
                 $ref: "#/components/schemas/Drink"
