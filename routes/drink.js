@@ -30,6 +30,7 @@ function linkToDrink(id, ws) {
         const drink = drinks[i];
         if(drink.id === id) {
             drink.ws = ws;
+            ws.send(JSON.stringify({name: drink.name, status: drink.status, id: drink.id}));
             return true;
         }
     }
