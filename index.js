@@ -24,6 +24,8 @@ console.log(`Listen WS on port ${process.env.PORT_WS}!`)
 
 wss.on('connection', function connection(ws) {
     console.log("new conenction ws");
+
+    // When we received a message, we link the client to the drink id
     ws.on('message', (message) => {
         console.log("new message: ", message);
         drink.linkToDrink(message, ws);

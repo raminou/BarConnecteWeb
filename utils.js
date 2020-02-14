@@ -9,6 +9,12 @@ const status_model = {
     message: ""
 };
 
+/*
+ * function initStatus
+ * - req: Request object
+ * - message: String message to add
+ * Return the object which will be send as a response
+ */
 function initStatus(req, message="") {
     let status = JSON.parse(JSON.stringify(status_model));
     status.method = req.method;
@@ -20,9 +26,13 @@ function initStatus(req, message="") {
     return status;
 }
 
+/*
+ * function generateUuid
+ * Return a unique Id
+ */
 function generateUuid(req) {
     // return uuidv5(req.protocol + '://' + req.get('host') + req.originalUrl, uuidv5.URL);
     return uuidv4();
 }
 
-module.exports = {initStatus, generateUuid};
+module.exports = { initStatus, generateUuid };

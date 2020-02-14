@@ -1,17 +1,19 @@
 const express = require('express');
-const {ingredients_model, drink_model} = './models/drink_model';
-const {initStatus, generateUuid} = require('../utils');
+const { ingredients_model, drink_model } = './models/drink_model';
+const { initStatus, generateUuid } = require('../utils');
 
 const router = express.Router();
 
 let recipes = [];
 
+// Get the recipes
 router.get('/', function(req, res) {
     let status = initStatus(req, "List of recipes");
     status.data = recipes;
     res.json(status);
 });
 
+// Put the receive
 router.put('/', function(req, res) {
     let recipe_to_add = req.body;
     const errors = recipe_model.validate(recipe_to_add);

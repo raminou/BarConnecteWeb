@@ -1,6 +1,7 @@
 const express = require('express');
-const {ingredients_model, ingredients} = require('../models/drink_model');
-const {initStatus, generateUuid} = require('../utils');
+
+const { ingredients_model, ingredients } = require('../models/drink_model');
+const { initStatus, generateUuid } = require('../utils');
 
 const router = express.Router();
 let drinks = [];
@@ -12,7 +13,11 @@ const StatusEnum = Object.freeze({
     "served": "served",
     "error": "error"
 });
-
+/*
+ * function deleteDrink
+ * - id: string drink id
+ * return true if the drink id has been found 
+ */
 function deleteDrink(id) {
     for(let i = 0; i < drinks.length; i++) {
         const drink = drinks[i];
@@ -25,6 +30,12 @@ function deleteDrink(id) {
     return false;
 }
 
+/*
+ * function linkToDrink:
+ * - id: string drink id
+ * - ws: WebSocket
+ * return true if the drink id has been found
+ */
 function linkToDrink(id, ws) {
     for(let i = 0; i < drinks.length; i++) {
         const drink = drinks[i];
@@ -49,6 +60,7 @@ router.get('/', function(req, res) {
     res.json(status);
 });
 
+// Get the first drink
 router.get('/first', function(req, res) {
     const contentType = req.header('accept');
     if(drinks.length >= 1) {
@@ -191,4 +203,4 @@ router.post('/:id', function(req, res) {
     res.status(400);
 });
 
-module.exports = {router, linkToDrink};
+module.exports = { router, linkToDrink };
