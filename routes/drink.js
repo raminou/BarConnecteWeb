@@ -39,7 +39,13 @@ function linkToDrink(id, ws) {
 // Get List of drinks
 router.get('/', function(req, res) {
     let status = initStatus(req, "List of drinks");
-    status.data = drinks;
+    status.data = drinks.map(drink => {
+        return {
+            ingredients: drink.ingredients,
+            id: drink.id,
+            status: drink.status
+        };
+    });
     res.json(status);
 });
 
@@ -50,7 +56,7 @@ router.get('/first', function(req, res) {
 
         switch(contentType) {
             case "text/plain":
-                console.log(drink);
+                // console.log(drink);
                 let text = `${drink.id} `;
                 if(drink === undefined) 
                     text += "NULL";
@@ -58,13 +64,15 @@ router.get('/first', function(req, res) {
                     for(let i = 0; i < ingredients.length; i++) {
                         const key = ingredients[i];
                         let find = false;
-                        for(let j = 0; j < drink.ingredients.length; j++) {
-                            const ing = drink.ingredients[j];
-                            if(ing.name === key) {
-                                find = true;
-                                console.log(`\t${ing.name}: ${ing.value}`);
-                                text += ing.value + ",";
-                                break;
+                        if(drink.ingredients !== undefined) {
+                            for(let j = 0; j < drink.ingredients.length; j++) {
+                                const ing = drink.ingredients[j];
+                                if(ing.name === key && ing.value !== undefined) {
+                                    find = true;
+                                    console.log(`\t${ing.name}: ${ing.value}`);
+                                    text += ing.value + ",";
+                                    break;
+                                }
                             }
                         }
 
@@ -144,6 +152,7 @@ router.get('/reset', function(req, res) {
 
 // Change status
 router.post('/:id', function(req, res) {
+    console.log(`status: ${req.body}`);
     const newStatus = StatusEnum[req.body.status];
     let error = "";
     if(newStatus !== undefined) {
